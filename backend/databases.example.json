@@ -1,0 +1,38 @@
+{
+  "_comment": "Copy to databases.json (git-ignored, chmod 600). One entry per MyGeotab database this backend serves, keyed by database name. Every key except username/password is optional and falls back to the matching .env default (GF_PARENT_GROUPS, ASSIGN_FIELD, FALLBACK_TO, REPORT_TZ ...). recipientsFile defaults to recipients.<database>.json, then recipients.json.",
+  "gpsfms_pilot": {
+    "label": "GPSFMS pilot (demo)",
+    "username": "automations@gpsfms.com",
+    "password": "change-me",
+    "gfParentGroups": [
+      "General Foremen"
+    ],
+    "assignField": "driver",
+    "emailEnabled": true,
+    "fallbackTo": [
+      "austin@gpsfms.com"
+    ],
+    "unassignedTo": [
+      "austin@gpsfms.com"
+    ],
+    "subjectPrefix": "[DEMO] Pre-Trip Completed",
+    "reportTz": "America/Denver"
+  },
+  "ilb": {
+    "label": "ILB",
+    "username": "automations@gpsfms.com",
+    "password": "change-me",
+    "gfParentGroups": [
+      "General Foremen"
+    ],
+    "assignField": "driver",
+    "emailEnabled": false,
+    "recipientsFile": "recipients.ilb.json",
+    "fallbackTo": [
+      "safety@example.com"
+    ],
+    "ccAll": [],
+    "subjectPrefix": "[ILB] Pre-Trip Completed",
+    "reportTz": "America/Los_Angeles"
+  }
+}

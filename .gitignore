@@ -1,0 +1,12 @@
+node_modules/
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/.env
+backend/databases.json
+backend/recipients.json
+backend/recipients.*.json
+backend/audit.jsonl
+backend/out/
+.pytest_cache/
+*.log

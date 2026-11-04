@@ -1,0 +1,16 @@
+{
+  "name": "My General Foreman",
+  "supportEmail": "support@gpsfms.com",
+  "version": "1.0.0",
+  "items": [
+    {
+      "url": "https://austin-gpsfms.github.io/gf-assignment-addin/dist/index.html",
+      "path": "DriveAppLink/",
+      "menuName": {
+        "en": "My General Foreman"
+      },
+      "onStartup": false
+    }
+  ],
+  "isSigned": false
+}

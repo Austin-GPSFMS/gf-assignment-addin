@@ -1,0 +1,128 @@
+/**
+ * Global styles for My General Foreman (Geotab Drive add-in).
+ *
+ * Zenith ships its design tokens via @geotab/zenith/dist/index.css; the rules
+ * below add the mobile page chrome Zenith doesn't cover (tap list, sticky
+ * footer). GPSFMS palette per brand guide.
+ */
+
+@import "@geotab/zenith/dist/index.css";
+
+:root {
+  --gpsfms-navy: #25477b;
+  --gpsfms-dark: #1c2b39;
+  --gpsfms-blue: #0084c2;
+  --gpsfms-blue-soft: #e5f1f8;
+  --gpsfms-light: #f4f4f4;
+  --gf-border: #d9dee5;
+}
+
+html, body, #root { margin: 0; padding: 0; min-height: 100%; }
+
+.gf-page {
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--gpsfms-dark);
+  padding: 16px 16px 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.gf-header h2 { margin: 0; font-size: 22px; color: var(--gpsfms-navy); }
+.gf-header p { margin: 6px 0 0; color: #5b6572; font-size: 14px; line-height: 1.4; }
+
+.gf-banners { display: flex; flex-direction: column; gap: 8px; }
+.gf-banners:empty { display: none; }
+
+.gf-card {
+  background: var(--gpsfms-light);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.gf-card-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.gf-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: #5b6572; }
+.gf-value { font-size: 15px; font-weight: 500; color: var(--gpsfms-dark); text-align: right; }
+.gf-value--none { color: #9aa3ae; font-weight: 400; font-style: italic; }
+
+.gf-loading { color: #5b6572; font-size: 14px; padding: 24px 0; text-align: center; }
+
+.gf-picker { display: flex; flex-direction: column; gap: 10px; }
+.gf-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--gf-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.gf-empty { padding: 18px 14px; color: #5b6572; font-size: 14px; }
+
+.gf-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--gf-border);
+  background: #fff;
+  color: var(--gpsfms-dark);
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.gf-row:last-child { border-bottom: 0; }
+.gf-row:active { background: var(--gpsfms-blue-soft); }
+.gf-row:disabled { opacity: 0.6; cursor: default; }
+.gf-row--selected { background: var(--gpsfms-blue-soft); }
+
+.gf-radio {
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #9aa3ae;
+  box-sizing: border-box;
+  position: relative;
+}
+.gf-radio--on { border-color: var(--gpsfms-blue); }
+.gf-radio--on::after {
+  content: "";
+  position: absolute; inset: 3px;
+  border-radius: 50%;
+  background: var(--gpsfms-blue);
+}
+.gf-row-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.gf-row-name { font-weight: 500; }
+.gf-row-sub { font-size: 12px; color: #5b6572; }
+.gf-pill {
+  flex: 0 0 auto;
+  font-size: 11px; font-weight: 500;
+  color: var(--gpsfms-navy);
+  background: #fff;
+  border: 1px solid var(--gpsfms-navy);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.gf-footer {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: #fff;
+  border-top: 1px solid var(--gf-border);
+  box-shadow: 0 -2px 8px rgba(28, 43, 57, 0.06);
+  z-index: 5;
+}
+.gf-footer > * { min-width: 110px; }

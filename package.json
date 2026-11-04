@@ -1,0 +1,26 @@
+{
+  "name": "gf-assignment-addin",
+  "version": "1.0.0",
+  "description": "GPSFMS My General Foreman — Geotab Drive add-in (driver self-assigns to a General Foreman group) + pre-trip completion emailer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "node test/smoke.mjs"
+  },
+  "dependencies": {
+    "@geotab/zenith": "^3.9.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
+  }
+}
