@@ -9,7 +9,7 @@
       "menuName": {
         "en": "My General Foreman"
       },
-      "onStartup": false
+      "onStartup": true
     }
   ],
   "isSigned": false

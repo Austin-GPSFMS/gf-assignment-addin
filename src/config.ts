@@ -12,3 +12,12 @@ export const REQUEST_TIMEOUT_MS = 20_000;
 
 /** Drive add-in registration name — must match config.json's menu entry. */
 export const ADDIN_NAME = "gfAssignment";
+
+/**
+ * Login-time notification (needs "onStartup": true in config.json).
+ *   "unassigned" — only nudge drivers who have no General Foreman yet
+ *   "always"     — also remind assigned drivers who they're under, so a
+ *                  driver working for a different GF today changes it
+ *   "off"        — no notification
+ */
+export const STARTUP_REMINDER: "unassigned" | "always" | "off" = "always";

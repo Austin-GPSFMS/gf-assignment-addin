@@ -15,7 +15,7 @@
 import { StrictMode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import App from "./App";
-import { ADDIN_NAME } from "./config";
+import { ADDIN_NAME, STARTUP_REMINDER } from "./config";
 import { fetchMe, fetchSession } from "./api/backend";
 import type { GeotabApi, GeotabPageState } from "./types";
 import "./styles.css";
@@ -76,19 +76,25 @@ function lifecycle(): AddinLifecycle {
     startup(api, _state, callback) {
       // Fire-and-forget: never hold up Drive's login flow.
       callback();
+      if (STARTUP_REMINDER === "off") return;
       void (async () => {
         try {
+          const notify = api.mobile?.notification?.notify;
+          if (!notify) return;
           const s = await fetchSession(api);
           const me = await fetchMe(s);
-          if (me.current.length === 0 && api.mobile?.notification?.notify) {
-            api.mobile.notification.notify(
-              "Open “My General Foreman” and pick who you report to.",
-              "General Foreman not set",
+          const gf = me.current[0]?.name;
+          if (!gf) {
+            notify("Open “My General Foreman” and pick who you report to.", "General Foreman not set", "gf-assignment");
+          } else if (STARTUP_REMINDER === "always") {
+            notify(
+              `You're under ${gf}. Working for a different General Foreman today? Open “My General Foreman” to change it.`,
+              `General Foreman: ${gf}`,
               "gf-assignment"
             );
           }
         } catch (e) {
-          console.warn("[GF] startup check skipped:", e);
+          console.warn("[GF] startup reminder skipped:", e);
         }
       })();
     },
