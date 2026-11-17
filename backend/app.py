@@ -200,7 +200,8 @@ def assign(body: AssignBody, request: Request):
     if len(before) == 1 and before[0]["id"] == body.groupId:
         return {"ok": True, "current": before, "message": "Already assigned."}
 
-    updated = gf_logic.apply_assignment(user, set(gf_by_id), body.groupId, t.assign_field)
+    tree = gf_logic.index_groups(rt.groups.groups())
+    updated = gf_logic.apply_assignment(user, set(gf_by_id), body.groupId, t.assign_field, tree)
     t0 = time.monotonic()
     try:
         rt.svc.set_user(updated)

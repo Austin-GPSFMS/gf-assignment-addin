@@ -113,7 +113,7 @@ def resolve_recipients(gf_name: str, users_by_id: dict[str, dict], rmap: dict[st
 # HTML
 # --------------------------------------------------------------------------
 def _fmt_time(t: datetime | None) -> str:
-    return t.strftime("%-I:%M %p") if t else "—"
+    return t.strftime("%I:%M %p").lstrip("0") if t else "—"  # portable (no %-I on Windows)
 
 
 def _rows_html(rows: list[dict]) -> str:
@@ -231,7 +231,7 @@ def run_tenant(t: Tenant, d: date, args, out_dir: Path) -> int:
     by_gf, unassigned = gf_logic.rollup_pretrips(logs, users_by_id, devices_by_id, gf_by_id, field, lambda x: x.astimezone(tz))
     rpath = t.recipients_path()
     rmap = load_recipient_map(rpath)
-    day_label = d.strftime("%A, %B %-d, %Y")
+    day_label = f"{d:%A, %B} {d.day}, {d.year}"  # portable (no %-d on Windows)
     tag = re.sub(r"[^A-Za-z0-9]+", "_", t.database)
     sent = 0
 

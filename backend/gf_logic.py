@@ -85,26 +85,77 @@ def current_gf(user: dict, gf_by_id: dict[str, dict], field: str = "driverGroups
     return [gf_by_id[r["id"]] for r in refs if r.get("id") in gf_by_id]
 
 
-def replace_gf_membership(refs: Iterable[GroupRef] | None, gf_ids: set[str], selected_id: str) -> list[GroupRef]:
+def parent_map(groups_by_id: dict[str, Group]) -> dict[str, str]:
+    """{child_id: parent_id} derived from each group's `children` list."""
+    out: dict[str, str] = {}
+    for g in groups_by_id.values():
+        for c in g.get("children") or []:
+            if c.get("id"):
+                out[c["id"]] = g["id"]
+    return out
+
+
+def ancestors(groups_by_id: dict[str, Group], group_id: str) -> set[str]:
+    parents = parent_map(groups_by_id)
+    out: set[str] = set()
+    cur = parents.get(group_id)
+    while cur and cur not in out:
+        out.add(cur)
+        cur = parents.get(cur)
+    return out
+
+
+def descendants(groups_by_id: dict[str, Group], group_id: str) -> set[str]:
+    out: set[str] = set()
+    stack = [c["id"] for c in (groups_by_id.get(group_id) or {}).get("children") or []]
+    while stack:
+        cid = stack.pop()
+        if cid in out:
+            continue
+        out.add(cid)
+        stack.extend(c["id"] for c in (groups_by_id.get(cid) or {}).get("children") or [])
+    return out
+
+
+def replace_gf_membership(
+    refs: Iterable[GroupRef] | None, gf_ids: set[str], selected_id: str, conflicts: set[str] | frozenset[str] = frozenset()
+) -> list[GroupRef]:
     """
-    New group-ref list: every existing non-GF group kept (order preserved),
-    every GF group removed, then the selected GF group appended once.
+    New group-ref list: every existing group kept (order preserved) EXCEPT
+    other GF groups and anything in `conflicts` (ancestors/descendants of the
+    selected group — MyGeotab refuses "groups that have a parent-child
+    relationship" on one entity), then the selected GF group appended once.
     """
-    kept = [r for r in (refs or []) if r.get("id") not in gf_ids]
+    drop = set(gf_ids) | set(conflicts)
+    kept = [r for r in (refs or []) if r.get("id") not in drop]
     kept.append({"id": selected_id})
     return kept
 
 
-def apply_assignment(user: dict, gf_ids: set[str], selected_id: str, assign_field: str = "driver") -> dict:
-    """Return a shallow copy of `user` with the GF selection applied."""
+def apply_assignment(
+    user: dict, gf_ids: set[str], selected_id: str, assign_field: str = "driver", groups_by_id: dict[str, Group] | None = None
+) -> dict:
+    """
+    Return a shallow copy of `user` with the GF selection applied.
+
+    With `groups_by_id` (the full group tree) the selected group's ancestors —
+    typically the company group or the "General Foremen" parent — and
+    descendants are removed from the field being set, which is what the
+    MyGeotab UI does when you pick a sub-group. For assign_field "company" /
+    "both" this narrows the user's data access to the GF group; "driver" (the
+    default) leaves companyGroups untouched.
+    """
     if selected_id not in gf_ids:
         raise ValueError("selected group is not a General Foreman group")
     fields = {"driver": ["driverGroups"], "company": ["companyGroups"], "both": ["driverGroups", "companyGroups"]}.get(assign_field)
     if not fields:
         raise ValueError(f"unknown ASSIGN_FIELD {assign_field!r}")
+    conflicts: set[str] = set()
+    if groups_by_id:
+        conflicts = ancestors(groups_by_id, selected_id) | descendants(groups_by_id, selected_id)
     out = dict(user)
     for f in fields:
-        out[f] = replace_gf_membership(user.get(f), gf_ids, selected_id)
+        out[f] = replace_gf_membership(user.get(f), gf_ids, selected_id, conflicts)
     return out
 
 

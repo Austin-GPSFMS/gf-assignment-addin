@@ -166,12 +166,18 @@ curl -s https://gf.gpsfms.com/api/health          # {"ok":true,"databases":{"ilb
 sudo -u gfapi /opt/gf-assignment/.venv/bin/python /opt/gf-assignment/pretrip_email.py --dry-run --database ilb
 ```
 
-The setup script installs Caddy (automatic Let's Encrypt HTTPS), a
-`gf-api` systemd service (uvicorn on localhost:8000) and a `gf-pretrip.timer`
-that runs the emailer daily at **10:00** server time (the script sets the
-instance timezone to `REPORT_TZ`, default `America/Los_Angeles`; pass
-`EMAIL_TIME=09:30` to change it). `deploy/Dockerfile` is the container
-alternative.
+The setup script is safe on a **shared box**: it installs Caddy only if the
+box has none, and if `/etc/caddy/Caddyfile` already exists it backs it up and
+*appends* one site block for the domain, then reloads Caddy so the other sites
+stay up. It never changes the system timezone — the `gf-pretrip.timer` is
+timezone-qualified (`OnCalendar=*-*-* 10:00:00 America/Los_Angeles`; pass
+`EMAIL_TIME=09:30` / `REPORT_TZ=…` to change). uvicorn listens on
+`127.0.0.1:8000`; pass `API_PORT=8010` if 8000 is taken (the script refuses to
+start on a busy port). Re-running the script refreshes code and units without
+touching `.env`, `databases.json` or recipients files. `deploy/Dockerfile` is
+the container alternative.
+
+To update after a code change: `cd ~/gf-assignment-addin && git pull && sudo bash deploy/lightsail-setup.sh gf.gpsfms.com`.
 
 Logs: `journalctl -u gf-api -f`, `journalctl -u gf-pretrip`. Audit trail:
 `/opt/gf-assignment/audit.jsonl`.

@@ -1,0 +1,11 @@
+{
+  "_comment": "GF group name → email recipients for the daily pre-trip email. Copy to recipients.json and fill in. Names must match the MyGeotab group name exactly (case-insensitive). A GF left out of this file falls back to a MyGeotab user whose first+last name equals the group name (user name must be an email), then to FALLBACK_TO. Shared groups like 'Brian Walch & Pete Schmit' can't be matched to a user, so list both emails here.",
+  "Brian Walch & Pete Schmit": ["bwalch@example.com", "pschmit@example.com"],
+  "Craig Phillips": ["cphillips@example.com"],
+  "Dale Wright": ["dwright@example.com"],
+  "Dan Martens": ["dmartens@example.com"],
+  "Jason Ray": ["jray@example.com"],
+  "Jorge Ruiz": ["jruiz@example.com"],
+  "Justin Liddle": ["jliddle@example.com"],
+  "Travis Swain": ["tswain@example.com"]
+}

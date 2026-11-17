@@ -6,6 +6,7 @@ backend/.env
 backend/databases.json
 backend/recipients.json
 backend/recipients.*.json
+!backend/recipients.example.json
 backend/audit.jsonl
 backend/out/
 .pytest_cache/

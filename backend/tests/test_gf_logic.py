@@ -107,3 +107,26 @@ def test_rollup_pretrips_groups_and_unassigned():
     names = [r["driver"] for r in unassigned]
     assert names == ["Eben Boehm", "Unknown driver"]
     assert unassigned[0]["defects"] == 2
+
+
+def test_apply_assignment_drops_ancestor_company_group():
+    """MyGeotab refuses a user whose groups contain both a group and its ancestor."""
+    tree = L.index_groups(GROUPS)
+    user = {"id": "u1", "companyGroups": [{"id": "GroupCompanyId"}], "driverGroups": [{"id": "GroupCompanyId"}]}
+    out = L.apply_assignment(user, {"g_whalen", "g_burke", "g_haggard"}, "g_whalen", "driver", tree)
+    assert out["driverGroups"] == [{"id": "g_whalen"}]
+    assert out["companyGroups"] == [{"id": "GroupCompanyId"}]  # untouched in driver mode
+
+
+def test_apply_assignment_drops_gf_parent_and_descendants_keeps_unrelated():
+    tree = L.index_groups(GROUPS)
+    user = {"id": "u1", "driverGroups": [{"id": "g_gf"}, {"id": "g_whalen_crew2"}, {"id": "g_idaho"}]}
+    out = L.apply_assignment(user, {"g_whalen", "g_burke", "g_haggard"}, "g_whalen", "driver", tree)
+    assert out["driverGroups"] == [{"id": "g_idaho"}, {"id": "g_whalen"}]
+
+
+def test_ancestors_and_descendants():
+    tree = L.index_groups(GROUPS)
+    assert L.ancestors(tree, "g_whalen_crew2") == {"g_whalen", "g_gf", "GroupCompanyId"}
+    assert L.descendants(tree, "g_gf") == {"g_whalen", "g_whalen_crew2", "g_burke", "g_haggard"}
+    assert L.ancestors(tree, "GroupCompanyId") == set()

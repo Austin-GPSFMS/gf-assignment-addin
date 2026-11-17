@@ -26,7 +26,7 @@ class FakeSvc:
     def __init__(self):
         self.users = {
             "u1": {"id": "u1", "name": "rbingham@ilb.com", "firstName": "Ryan", "lastName": "Bingham", "isDriver": True,
-                   "companyGroups": [{"id": "GroupCompanyId"}], "driverGroups": [{"id": "g_burke"}]}
+                   "companyGroups": [{"id": "GroupCompanyId"}], "driverGroups": [{"id": "GroupCompanyId"}, {"id": "g_burke"}]}
         }
         self.sets = []
         self.fail_set = False
